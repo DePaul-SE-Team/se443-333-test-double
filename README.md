@@ -1,162 +1,144 @@
-# SE443 Tutorial: Mocking with Mockito
+# Tutorial #3: Mocking
+## Introduction:
+In this tutorial, you will learn how to learn what Mocking is and how to mock some
+objects.
 
-## Overview
+## Definition:
+Mocking is creating objects that simulate the behavior of real objects. An object that you
+want to test may have dependencies on other complex objects. In unit testing, we use
+mocking to isolate the behavior of the objects you want to test by replacing the other objects
+by mocks, simulating the behavior of the real objects.
+## Goals
+   - Classes are not isolated. They may use services and methods that are from other
+       classes. We want to mock the behavior of these dependencies.
 
-Production classes rarely work alone. They call databases, web services, repositories, and other objects. A unit test should focus on one class at a time, so it replaces those dependencies with **mocks**—controllable stand-ins that return predetermined values and record how they were used.
+## Mechanism:
+The mechanism of mocking is to mock the services and methods from other classes and
+simulate the real behavior of them using some mocking frameworks and use that mocked
+methods and services to do unit testing in isolation. This is where Mocking frameworks come
+into play.
 
-In this tutorial, you will use [Mockito](https://site.mockito.org/) with JUnit 4 to:
+## Tools:
+   - Frameworks available for mocking in unit testing include PowerMock, EasyMock, and
+        Mockito.
+In this tutorial, we will use the Mockito framework for mocking.
+The documentation for the Mockito framework can be found here:
+https://javadoc.io/static/org.mockito/mockito-core/3.2.4/org/mockito/Mockito.html
 
-- create mock objects;
-- stub method results;
-- define consecutive return values;
-- use argument matchers;
-- test a class independently from its dependency; and
-- explain the interaction between a class under test and a mock.
+## Mockito - Features:
+   - Mockito is a proxy based framework
 
-## Prerequisites
+A proxy is just an object which will be used instead of the original object. If a method of the
+proxy object is called than the proxy object can decide what it will do with this call:
 
-- Java 17 or later
-- Maven 3.8 or later
-- An IDE of your choice (optional)
+        - delegate it to the original object
 
-Check your installation:
+        - handles the call itself
 
-```bash
-java -version
-mvn -version
+A proxy doesn’t require an instance of an interface/class if the proxy handles all method
+invocations itself.
+
+## Environment Requirements:
+Please make sure that you have Maven and Java installed on your computer.
+   - OS: macOS 10.16
+   - Eclipse: version 2021-6
+   - Java: version 1.8
+
+   - Maven: version 3.6.3
+
+Note: Only the above environment is tested by us, not sure if other versions work well.
+
+## Experiment:
+Please make sure that you have Maven and Java installed on your computer.
+
+## Part A (Integrate Mockito and JUnit testing tool into an example project)
+
+press Next
+
+press Next (make sure to select Create a simple project)
+
+Fill in the information and Press Finish
+
+Open pom.xml
+
+Add in before </project> to download the dependencies for JUnit and Mockito framework:
+
+```xml
+   <dependencies>
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.12</version>
+  <scope>test</scope>
+</dependency>
+<dependency>
+  <groupId>org.mockito</groupId>
+  <artifactId>mockito-all</artifactId>
+  <version>1.10.19</version>
+  <scope>test</scope>
+</dependency>
+   </dependencies>
 ```
 
-## Project structure
+Check that JUnit is working - The test actually does not contain any Mockito functions yet:
 
-```text
-.
-├── pom.xml
-├── src
-│   ├── main/java/com/se465/mock
-│   │   ├── TodoBusinessImpl.java
-│   │   └── TodoService.java
-│   └── test/java/com/se465/mock
-│       ├── ListTestTest.java
-│       └── TodoBusinessImplMockitoTest.java
-└── README.md
-```
+## Part B: (Paste in your first basic Mockito test cases)
+Create a JUnit test case named ListTestTest
+You can paste the code from ListTestTest.java in Tutorial3.zip.
 
-`TodoBusinessImpl` is the class under test. `TodoService` is its dependency. The tests replace `TodoService` with a Mockito mock, so no real service implementation is required.
+When run, this should be shown:
 
-## Getting started
+For each of the four unit tests, you can see the line List list = mock(List.class);
 
-From the project root, run:
+The mock function takes in a parameter of type Object.class to mock
 
-```bash
-mvn clean test
-```
+To make letsMockListSizeWithMultipleReturnValues() pass, add this line after the
+commented line:
 
-Maven downloads JUnit and Mockito automatically. A successful run ends with `BUILD SUCCESS`.
-
-To run one test class:
-
-```bash
-mvn -Dtest=ListTestTest test
-mvn -Dtest=TodoBusinessImplMockitoTest test
-```
-
-## Part A — Understand the test setup
-
-Open `pom.xml` and identify:
-
-1. the Java version used to compile the project;
-2. the JUnit dependency;
-3. the Mockito dependency; and
-4. why both testing dependencies use the `test` scope.
-
-Unlike the original setup instructions, you do not need to create an Eclipse project or paste dependencies manually. The repository is already a standard Maven project.
-
-## Part B — Mock a `List`
-
-Open `src/test/java/com/se465/mock/ListTestTest.java` and run its four tests.
-
-### 1. Stub one return value
-
-`letsMockListSize` creates a mock `List` and defines the result of `size()`:
-
-```java
-when(list.size()).thenReturn(10);
-```
-
-The mock does not calculate a real list size. It returns the value specified by the test.
-
-### 2. Stub consecutive return values
-
-`letsMockListSizeWithMultipleReturnValues` demonstrates different results on consecutive calls:
-
-```java
 when(list.size()).thenReturn(10, 20);
-```
 
-The first call returns `10`; the second and later calls return `20`.
+Now run the tests again and it should pass.
 
-### 3. Observe Mockito's default answer
+By default, for all methods that return a value, a mock will return either null, a
+primitive/primitive wrapper value, or an empty collection, as appropriate. For example 0 for
+an int/Integer and false for a boolean/Boolean.
 
-In `letsMockListGet`, only `get(0)` is stubbed. Uncomment the following assertion, rerun the test, and explain the result:
+Once stubbed, the method will always return a stubbed value, regardless of how many times
+it is called, unless overridden by specifying another value through another stub.
 
-```java
-assertNull(list.get(1));
-```
+The last stubbing is more important - when you stubbed the same method with the same
+arguments many times. Other words: the order of stubbing matters but it is only
+meaningful rarely, e.g. when stubbing exactly the same method calls or sometimes when
+argument matchers are used, etc.
 
-For an unstubbed method, Mockito returns an appropriate default value—for example, `null` for many reference types, `0` for numeric primitives, and `false` for `boolean`.
+## Part C: (Mocking a class implementation)
+Now that we have mocked the List class from Java, we will see how mocking a dependency
+works. In real life, rather than mocking a List object, we would have instances of an actual
+one. You can find the following Java files in Tutorial3.zip.
+TodoService.java interface
+TodoBusinessImplMockitoTest.java test case
+TodoBusinessImpl.java class
+After you finish all the experiment parts (part A to part C), you need to answer the
+corresponding questions in the following report and provide appropriate screenshots and / or
+source files to support your answers.
 
-### 4. Use an argument matcher
+Please submit it as a PDF file on moodle with the file name of
+‘Tutorial3_yourname_yourstudentID.pdf’.
 
-`letsMockListGetWithAny` uses `anyInt()` instead of a specific index:
+Last but not least, plagiarism is prohibited. Have fun!
 
-```java
-when(list.get(anyInt())).thenReturn("this is an int");
-```
+## Tutorial #3 report
+                                       Student number:
+                                        Student name:
 
-Run the test and explain why calls with both `0` and `1` match the same stub.
+Question 1 [2%]: For @Test public void letsMockListGet(), does the commented line
+// assertNull(list.get(1)); pass or fail when uncommented? Why? If it fails, how do we make it
+pass? What is the value of list.get(1)?
 
-## Part C — Isolate a class from its dependency
+Question 2 [2%]: Mockito has something called “ArgumentMatchers”. How do they work?
+There is an example in the test case @Test public void letsMockListGetWithAny(), which
+passes when run. How does this work?
 
-Read these files in order:
-
-1. `TodoService.java` — the dependency contract;
-2. `TodoBusinessImpl.java` — the class under test; and
-3. `TodoBusinessImplMockitoTest.java` — the isolated unit tests.
-
-Trace the `usingMockito` test:
-
-1. Mockito creates a `TodoService` mock.
-2. The test stubs `retrieveTodos("Ranga")` with three sample items.
-3. The mock is injected into `TodoBusinessImpl` through its constructor.
-4. `retrieveTodosRelatedToSpring` asks the mock for the items.
-5. The business class keeps only items containing `"Spring"`.
-6. The test verifies the resulting list.
-
-Then inspect `deletesOnlyTodosNotRelatedToSpring`. Notice the difference between:
-
-- **state verification**, which checks a returned value with an assertion; and
-- **interaction verification**, which checks whether the mock received the expected method calls with `verify(...)`.
-
-## Questions you can answer!
-
-Submit concise answers supported by relevant code snippets or test-output screenshots.
-
-### Question 1
-
-In `letsMockListGet`, does `assertNull(list.get(1))` pass when uncommented? Why? What value does `list.get(1)` return, and how could you explicitly stub it?
-
-### Question 2
-
-How do Mockito argument matchers work? Use `letsMockListGetWithAny` to explain why one stub applies to several integer arguments.
-
-### Question 3
-
-Describe the interactions in `TodoBusinessImplMockitoTest`. Clearly identify:
-
-- the class under test;
-- the mocked dependency;
-- the stubbed behavior;
-- the method call being tested; and
-- the assertion or verification that determines whether the test passes.
-
-
+Question 3 [2%]: Copy the three files above into the same test directory as Part C
+Observe the three files and run the unit tests in TodoBusinessImplMockitoTest.java. Describe the
+interactions.
