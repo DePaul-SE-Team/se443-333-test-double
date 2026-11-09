@@ -33,7 +33,7 @@ public class ListTestTest {
         when(list.get(0)).thenReturn("0th element");
         assertEquals("0th element", list.get(0));
         // Does the next line pass or fail? Why? If it fails, how do we make it pass? What is the value of list.get(1)?
-        // assertNull(list.get(1));
+        // assertNotNull(list.get(1));
     }
 
     @Test
