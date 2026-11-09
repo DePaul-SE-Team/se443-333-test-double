@@ -64,8 +64,6 @@ A stub with a single return value keeps returning that value on matching calls. 
 
 In the provided project, open `TodoService.java`, `TodoBusinessImpl.java`, and `TodoBusinessImplMockitoTest.java`. Run `TodoBusinessImplMockitoTest` and trace how the test configures a mock service, passes it to the business class, and checks the result. Use what you observe to answer Question 3.
 
-After completing the exercises, answer the questions below. Include relevant screenshots or source files to support your answers. Submit the report as a PDF on Moodle using the filename `Tutorial3_yourname_yourstudentID.pdf`.
-
 ## Now answer questions below:
 
 ### Question 1 [2%]
