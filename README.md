@@ -44,7 +44,7 @@ invocations itself.
 
 ## Experiment
 
-### Part B — Basic Mockito tests
+### Part A — Basic Mockito tests
 
 Open the provided `ListTestTest.java`. Each of its four tests creates a mock of the Java `List` interface. Start with `letsMockListSize()` to see how a test configures the mock to return a particular value when a method is called.
 
@@ -60,7 +60,7 @@ By default, a mock returns a value appropriate to the return type when a call ha
 
 A stub with a single return value keeps returning that value on matching calls. A stub can also specify different values for consecutive calls. When the same method call matches multiple stubs, the most recently defined matching stub takes precedence.
 
-### Part C — Mocking a dependency
+### Part B — Mocking a dependency
 
 In the provided project, open `TodoService.java`, `TodoBusinessImpl.java`, and `TodoBusinessImplMockitoTest.java`. Run `TodoBusinessImplMockitoTest` and trace how the test configures a mock service, passes it to the business class, and checks the result. Use what you observe to answer Question 3.
 
